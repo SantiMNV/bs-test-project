@@ -34,3 +34,5 @@ Thank you! 🙏
 ## Security documentation
 
 - See `SECURITY.md` for documented attack scenarios, exploitation examples, mitigations, and verification steps.
+
+**I have written my thoughts about this project, see `TODO.md`**

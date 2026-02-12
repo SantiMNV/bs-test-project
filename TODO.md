@@ -3,7 +3,7 @@
 - [x] Creating a JS search functionality that allows users to filter records by city
 - [x] Implementing form submission using AJAX
 - [x] Adding a phone number column to the table
-- [ ] Deploying your project and sending us a production link
+- [x] Deploying your project and sending us a production link
 
 
 # Extra 
@@ -76,3 +76,13 @@ this is not a perfect checklist. So please, don’t limit yourself to these poin
 
 ## Replaced mysqli for pdo
 I thought about adding an ORM for this project, but think it would be overkill for our needs.
+
+## Thoughts
+I decided deploying the service using railway, there, I get logs and observavility enough for this testing project.
+The service is completely sandboxed and only expose needed ports, db is inside the internal network.
+I would have liked to add pagination for the table, also adding an index for country searching.
+I think the project is safe enough for for the abstract of the assessment.
+It's my first time with php and bootstrap in many years, but cursor and codex have written 99% of code.
+I spent 1h30mins just deploying it because of railway stuff, I have learned and I would do it in 5 minutes now.
+
+Total spent time: ~ 3h 30mins
