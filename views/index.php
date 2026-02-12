@@ -1,13 +1,13 @@
-<div class="page-header">
-  <h1>Users</h1>
+<div class="border-bottom pb-2 mb-4">
+  <h1 class="h2 mb-0">Users</h1>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">User List</h3>
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="h5 mb-0">User List</h2>
   </div>
   <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
+    <table class="table table-striped table-bordered table-hover mb-0">
       <thead>
         <tr>
           <th>Name</th>
@@ -28,35 +28,35 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Create New User</h3>
+<div class="card">
+  <div class="card-header">
+    <h2 class="h5 mb-0">Create New User</h2>
   </div>
-  <div class="panel-body">
-    <form method="post" action="create.php" class="form-horizontal">
-      <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Name</label>
+  <div class="card-body p-4">
+    <form method="post" action="create.php" class="row">
+      <div class="row mb-2">
+        <label for="name" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-10">
           <input type="text" name="name" id="name" class="form-control" required>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="email" class="col-sm-2 control-label">E-mail</label>
+      <div class="row mb-2">
+        <label for="email" class="col-sm-2 col-form-label">E-mail</label>
         <div class="col-sm-10">
           <input type="email" name="email" id="email" class="form-control" required>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="city" class="col-sm-2 control-label">City</label>
+      <div class="row mb-2">
+        <label for="city" class="col-sm-2 col-form-label">City</label>
         <div class="col-sm-10">
           <input type="text" name="city" id="city" class="form-control" required>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
+      <div class="row mb-2">
+        <div class="col-sm-10 offset-sm-2">
           <button type="submit" class="btn btn-primary">Create new row</button>
         </div>
       </div>

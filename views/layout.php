@@ -18,11 +18,9 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom mb-4">
       <div class="container">
-        <div class="navbar-header">
-          <span class="navbar-brand">PHP Test Application</span>
-        </div>
+        <span class="navbar-brand mb-0 h1">PHP Test Application</span>
       </div>
     </nav>
 
