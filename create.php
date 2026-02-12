@@ -53,8 +53,15 @@ if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $tok
 $name = trim((string) ($_POST['name'] ?? ''));
 $email = trim((string) ($_POST['email'] ?? ''));
 $city = trim((string) ($_POST['city'] ?? ''));
+$phone = trim((string) ($_POST['phone'] ?? ''));
+$phoneInput = trim((string) ($_POST['phone_input'] ?? ''));
 
-$oldInput = array('name' => $name, 'email' => $email, 'city' => $city);
+$oldInput = array(
+	'name' => $name,
+	'email' => $email,
+	'city' => $city,
+	'phone' => $phone !== '' ? $phone : $phoneInput
+);
 $errors = array();
 
 if ($name === '') {
@@ -79,16 +86,22 @@ if ($city === '') {
 	$errors[] = 'City contains invalid characters.';
 }
 
+if ($phone === '') {
+	$errors[] = 'Phone number is required.';
+} elseif (!preg_match('/^\+[1-9]\d{7,14}$/', $phone)) {
+	$errors[] = 'Phone number must be valid E.164 format (example: +14155552671).';
+}
+
 if (!empty($errors)) {
 	failRequest($errors, $oldInput, $isAjax, 422);
 }
 
-$stmt = $app->db->mysqli->prepare('INSERT INTO `users` (`name`, `email`, `city`, `created_at`) VALUES (?, ?, ?, NOW())');
+$stmt = $app->db->mysqli->prepare('INSERT INTO `users` (`name`, `email`, `city`, `phone`, `created_at`) VALUES (?, ?, ?, ?, NOW())');
 if (!$stmt) {
 	failRequest(array('Unable to save record right now. Please try again.'), $oldInput, $isAjax, 500);
 }
 
-$stmt->bind_param('sss', $name, $email, $city);
+$stmt->bind_param('ssss', $name, $email, $city, $phone);
 $ok = $stmt->execute();
 $stmt->close();
 
@@ -102,7 +115,8 @@ if ($isAjax) {
 		'user' => array(
 			'name' => $name,
 			'email' => $email,
-			'city' => $city
+			'city' => $city,
+			'phone' => $phone
 		)
 	));
 }

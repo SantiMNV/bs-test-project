@@ -11,9 +11,11 @@
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/application.css">
+    <link rel="stylesheet" type="text/css" href="css/vendor/intl-tel-input/intlTelInput.css">
 
     <script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/vendor/intl-tel-input/intlTelInput.min.js" defer></script>
 	<script type="text/javascript" charset="utf-8" src="js/application.js" defer></script>
 
   </head>

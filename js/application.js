@@ -110,7 +110,7 @@
     var row = document.createElement('tr');
     row.setAttribute('data-city', user.city || '');
 
-    ['name', 'email', 'city'].forEach(function (field) {
+    ['name', 'email', 'city', 'phone'].forEach(function (field) {
       var cell = document.createElement('td');
       cell.textContent = user[field] || '';
       row.appendChild(cell);
@@ -125,18 +125,64 @@
     refreshCityFilter();
   }
 
+  function initPhoneField() {
+    var input = document.getElementById('phone_input');
+    var hidden = document.getElementById('phone_e164');
+
+    if (!input || !hidden || typeof window.intlTelInput !== 'function') {
+      return {
+        sync: function () {
+          return false;
+        }
+      };
+    }
+
+    var iti = window.intlTelInput(input, {
+      initialCountry: 'us',
+      nationalMode: false,
+      autoPlaceholder: 'aggressive',
+      strictMode: true,
+      loadUtils: function () {
+        return import('/js/vendor/intl-tel-input/utils.js');
+      }
+    });
+
+    function syncPhone() {
+      var number = iti.getNumber();
+      hidden.value = number || '';
+
+      if (!number || !iti.isValidNumber()) {
+        input.setCustomValidity('Please enter a valid international phone number.');
+        return false;
+      }
+
+      input.setCustomValidity('');
+      return true;
+    }
+
+    input.addEventListener('countrychange', syncPhone);
+    input.addEventListener('input', syncPhone);
+    syncPhone();
+
+    return {
+      sync: syncPhone
+    };
+  }
+
   function initCreateUserAjax() {
     var form = document.getElementById('createUserForm');
     if (!form || typeof window.fetch !== 'function') {
       return;
     }
 
+    var phone = initPhoneField();
     var feedbackEl = document.getElementById('createUserAjaxFeedback');
     var submitButton = document.getElementById('createUserSubmit');
     var originalButtonText = submitButton ? submitButton.textContent : '';
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
+      phone.sync();
 
       if (!form.checkValidity()) {
         event.stopPropagation();
@@ -189,6 +235,7 @@
           setAjaxFeedback(feedbackEl, 'success', ['User created successfully.']);
           form.reset();
           form.classList.remove('was-validated');
+          phone.sync();
         })
         .catch(function () {
           setAjaxFeedback(feedbackEl, 'danger', ['Unable to save record right now. Please try again.']);

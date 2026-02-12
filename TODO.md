@@ -2,7 +2,7 @@
 - [x] Adding validation of new records
 - [x] Creating a JS search functionality that allows users to filter records by city
 - [x] Implementing form submission using AJAX
-- [ ] Adding a phone number column to the table
+- [x] Adding a phone number column to the table
 - [ ] Deploying your project and sending us a production link
 
 
@@ -65,3 +65,11 @@ this is not a perfect checklist. So please, don’t limit yourself to these poin
   - [x] Preserved backend validation + CSRF protection for AJAX and non-AJAX flows
   - [x] Added user-facing success/error feedback area in create form
   - [x] Appends newly created row in table without page refresh
+
+- [x] Phone number column using `intl-tel-input`
+  - [x] Added local assets for `intl-tel-input` (JS/CSS/images), no CDN at runtime
+  - [x] Added phone input with country flag/prefix selector in create form
+  - [x] Frontend validation with `intl-tel-input` (`isValidNumber`) and E.164 sync
+  - [x] Added hidden `phone` field sent as E.164 (e.g. `+14155552671`)
+  - [x] Backend validation enforces strict E.164 format and length
+  - [x] Added `phone` column in table and AJAX row rendering

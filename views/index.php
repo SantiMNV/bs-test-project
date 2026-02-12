@@ -32,6 +32,7 @@
           <th>Name</th>
           <th>E-mail</th>
           <th>City</th>
+          <th>Phone</th>
         </tr>
       </thead>
       <tbody id="userTableBody">
@@ -40,10 +41,11 @@
           <td><?= htmlspecialchars($user->getName(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
           <td><?= htmlspecialchars($user->getEmail(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
           <td><?= htmlspecialchars($user->getCity(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
+          <td><?= htmlspecialchars($user->getPhone(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
         </tr>
         <?php } ?>
         <tr id="cityFilterNoResults" style="display: none;">
-          <td colspan="3" class="text-center text-muted">No users match this city filter.</td>
+          <td colspan="4" class="text-center text-muted">No users match this city filter.</td>
         </tr>
       </tbody>
     </table>
@@ -70,6 +72,7 @@
 
     <form method="post" action="create.php" class="row needs-validation" novalidate id="createUserForm">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
+      <input type="hidden" name="phone" id="phone_e164" value="<?= htmlspecialchars($oldInput['phone'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
 
       <div class="row mb-2">
         <label for="name" class="col-sm-2 col-form-label">Name</label>
@@ -92,6 +95,23 @@
         <div class="col-sm-10">
           <input type="text" name="city" id="city" class="form-control" required maxlength="100" pattern="[A-Za-zÀ-ÖØ-öø-ÿ .'-]+" value="<?= htmlspecialchars($oldInput['city'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
           <div class="invalid-feedback">Please enter a valid city (max 100 characters).</div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <label for="phone_input" class="col-sm-2 col-form-label">Phone</label>
+        <div class="col-sm-10">
+          <input
+            type="tel"
+            name="phone_input"
+            id="phone_input"
+            class="form-control"
+            required
+            autocomplete="tel"
+            value="<?= htmlspecialchars($oldInput['phone'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+          >
+          <div class="invalid-feedback">Please enter a valid phone number.</div>
+          <small id="phoneHelp" class="text-muted">Use the country selector (flag + prefix) and enter a valid number.</small>
         </div>
       </div>
 

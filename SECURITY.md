@@ -13,6 +13,7 @@ It does not claim to cover every attack ever possible on any PHP app. It focuses
   - `name`
   - `email`
   - `city`
+  - `phone`
 - Data sinks:
   - SQL `INSERT` into `users`
   - HTML table rendering
@@ -38,8 +39,8 @@ Impact:
 ### Current mitigation
 
 - `create.php` now uses prepared statements:
-  - `prepare('INSERT INTO users (...) VALUES (?, ?, ?, NOW())')`
-  - `bind_param('sss', ...)`
+  - `prepare('INSERT INTO users (...) VALUES (?, ?, ?, ?, NOW())')`
+  - `bind_param('ssss', ...)`
 - Input validation reduces malicious payload surface before DB layer.
 
 ### How to test now
@@ -213,6 +214,7 @@ Client-side validation can be bypassed by direct HTTP requests.
   - required fields
   - format checks
   - length checks
+  - strict phone validation in E.164 format
 
 ### How to test now
 
