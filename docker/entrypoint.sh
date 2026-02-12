@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+mkdir -p /var/www/html/config
+
 cat > /var/www/html/config/database.php <<PHP
 <?php
 
