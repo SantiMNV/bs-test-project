@@ -30,3 +30,7 @@ Please, start with these:
 
 We’re looking forward to seeing what you come up with!
 Thank you! 🙏
+
+## Security documentation
+
+- See `SECURITY.md` for documented attack scenarios, exploitation examples, mitigations, and verification steps.

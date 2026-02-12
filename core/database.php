@@ -18,10 +18,10 @@ class Database {
 		$this->mysqli = new mysqli($this->config['address'], $this->config['username'], $this->config['password'], $this->config['database']);
 		
 		if ($this->mysqli->connect_errno) {
-			echo "Failed to connect to MySQL: " . $this->mysqli->connect_error;
+			die('Database connection failed.');
 		}
 		// Set correct encoding
-		$this->mysqli->query("SET CHARACTER SET utf8");
+		$this->mysqli->set_charset('utf8mb4');
 	}
 	
 	/**
@@ -46,7 +46,8 @@ class Database {
 	 * Dies and prints all relevant error information
 	 */
 	private function handleError() {
-		die("(" . $this->mysqli->errno . ") " . $this->mysqli->error." LINE: ".__LINE__." in ".__FILE__." TRACE:<pre> ".print_r(debug_backtrace(),true)."</pre>");	
+		error_log('Database error ('.$this->mysqli->errno.'): '.$this->mysqli->error);
+		die('A database error occurred.');	
 	}
 	
 	/**

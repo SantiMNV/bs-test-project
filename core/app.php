@@ -19,6 +19,10 @@ class App {
 	public function __construct(){
 		// Save current directory path
 		$this->directory = dirname(__FILE__);
+
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
 		
 		// Load configuration options
 		$this->config = require $this->directory.'/config.php';
@@ -35,6 +39,11 @@ class App {
 	 * param $vars: array of variables to be accessed insede the views
 	 */
 	public function renderView($viewfile, $vars = array()) {
+		header('X-Content-Type-Options: nosniff');
+		header('X-Frame-Options: DENY');
+		header('Referrer-Policy: strict-origin-when-cross-origin');
+		header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+
 		// Render array to usable variables
 		foreach ($vars as $key => $value) {
 			$$key = $value;
