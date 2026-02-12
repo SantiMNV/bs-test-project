@@ -7,6 +7,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 	exit;
 }
 
+function isAjaxRequest(): bool {
+	$xRequestedWith = strtolower((string) ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? ''));
+	$accept = strtolower((string) ($_SERVER['HTTP_ACCEPT'] ?? ''));
+
+	return $xRequestedWith === 'xmlhttprequest' || strpos($accept, 'application/json') !== false;
+}
+
+function respondJson(int $statusCode, array $payload): void {
+	http_response_code($statusCode);
+	header('Content-Type: application/json; charset=UTF-8');
+	echo json_encode($payload);
+	exit;
+}
+
 function redirectWithErrors(array $errors, array $oldInput): void {
 	$_SESSION['form_errors'] = $errors;
 	$_SESSION['old_input'] = $oldInput;
@@ -14,19 +28,33 @@ function redirectWithErrors(array $errors, array $oldInput): void {
 	exit;
 }
 
+function failRequest(array $errors, array $oldInput, bool $isAjax, int $statusCode = 422): void {
+	if ($isAjax) {
+		respondJson($statusCode, array(
+			'ok' => false,
+			'errors' => $errors
+		));
+	}
+
+	redirectWithErrors($errors, $oldInput);
+}
+
 function safeLength(string $value): int {
 	return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
 }
 
+$isAjax = isAjaxRequest();
+
 $token = $_POST['csrf_token'] ?? '';
 if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
-	redirectWithErrors(array('The form has expired. Please try again.'), array());
+	failRequest(array('The form has expired. Please refresh the page and try again.'), array(), $isAjax, 403);
 }
 
 $name = trim((string) ($_POST['name'] ?? ''));
 $email = trim((string) ($_POST['email'] ?? ''));
 $city = trim((string) ($_POST['city'] ?? ''));
 
+$oldInput = array('name' => $name, 'email' => $email, 'city' => $city);
 $errors = array();
 
 if ($name === '') {
@@ -52,12 +80,12 @@ if ($city === '') {
 }
 
 if (!empty($errors)) {
-	redirectWithErrors($errors, array('name' => $name, 'email' => $email, 'city' => $city));
+	failRequest($errors, $oldInput, $isAjax, 422);
 }
 
 $stmt = $app->db->mysqli->prepare('INSERT INTO `users` (`name`, `email`, `city`, `created_at`) VALUES (?, ?, ?, NOW())');
 if (!$stmt) {
-	redirectWithErrors(array('Unable to save record right now. Please try again.'), array('name' => $name, 'email' => $email, 'city' => $city));
+	failRequest(array('Unable to save record right now. Please try again.'), $oldInput, $isAjax, 500);
 }
 
 $stmt->bind_param('sss', $name, $email, $city);
@@ -65,7 +93,18 @@ $ok = $stmt->execute();
 $stmt->close();
 
 if (!$ok) {
-	redirectWithErrors(array('Unable to save record right now. Please try again.'), array('name' => $name, 'email' => $email, 'city' => $city));
+	failRequest(array('Unable to save record right now. Please try again.'), $oldInput, $isAjax, 500);
+}
+
+if ($isAjax) {
+	respondJson(201, array(
+		'ok' => true,
+		'user' => array(
+			'name' => $name,
+			'email' => $email,
+			'city' => $city
+		)
+	));
 }
 
 header('Location: index.php', true, 303);

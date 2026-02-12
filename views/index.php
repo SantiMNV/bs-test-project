@@ -55,6 +55,8 @@
     <h2 class="h5 mb-0">Create New User</h2>
   </div>
   <div class="card-body p-4">
+    <div id="createUserAjaxFeedback" class="alert d-none" role="alert" aria-live="polite"></div>
+
     <?php if (!empty($formErrors)) { ?>
       <div class="alert alert-danger" role="alert">
         <strong>Please fix the following errors:</strong>
@@ -66,7 +68,7 @@
       </div>
     <?php } ?>
 
-    <form method="post" action="create.php" class="row needs-validation" novalidate>
+    <form method="post" action="create.php" class="row needs-validation" novalidate id="createUserForm">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
 
       <div class="row mb-2">
@@ -95,7 +97,7 @@
 
       <div class="row mb-2">
         <div class="col-sm-10 offset-sm-2">
-          <button type="submit" class="btn btn-primary">Create new row</button>
+          <button type="submit" class="btn btn-primary" id="createUserSubmit">Create new row</button>
         </div>
       </div>
     </form>

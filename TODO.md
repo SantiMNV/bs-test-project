@@ -1,7 +1,7 @@
 - [x] Styling the page using [Bootstrap](http://getbootstrap.com/) or [Tailwind](https://tailwindcss.com/)
 - [x] Adding validation of new records
 - [x] Creating a JS search functionality that allows users to filter records by city
-- [ ] Implementing form submission using AJAX
+- [x] Implementing form submission using AJAX
 - [ ] Adding a phone number column to the table
 - [ ] Deploying your project and sending us a production link
 
@@ -57,3 +57,11 @@ this is not a perfect checklist. So please, don’t limit yourself to these poin
   - [x] Added clear filter button
   - [x] Added no-results row when no city matches query
   - [x] Moved inline page scripts into external `js/application.js` for CSP compatibility
+
+- [x] AJAX form submission
+  - [x] Added AJAX submit handler with `fetch` in `js/application.js`
+  - [x] Kept progressive enhancement fallback (non-JS still posts to `create.php`)
+  - [x] Added JSON response mode in `create.php` for AJAX requests
+  - [x] Preserved backend validation + CSRF protection for AJAX and non-AJAX flows
+  - [x] Added user-facing success/error feedback area in create form
+  - [x] Appends newly created row in table without page refresh
