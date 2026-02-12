@@ -24,7 +24,7 @@ This repository is a small PHP application that lists users from MySQL and allow
 - `README.md`
   - Assignment and setup instructions.
 - `Dockerfile`
-  - PHP 8.2 + Apache image, installs `mysqli`, runs custom entrypoint.
+  - PHP 8.2 + Apache image, installs `pdo_mysql`, runs custom entrypoint.
 - `docker-compose.yml`
   - Multi-container setup (`app`, `db`, `adminer`).
 - `.dockerignore`
@@ -40,8 +40,8 @@ This repository is a small PHP application that lists users from MySQL and allow
 - `core/config.php`
   - Loads database credentials from `config/database.php` into `Config::$database`.
 - `core/database.php`
-  - `Database` wrapper around `mysqli`.
-  - Connect, execute queries, convert results to arrays, basic error handling.
+  - `Database` wrapper around PDO.
+  - Connect, execute parameterized queries, convert results to arrays, basic error handling.
 - `core/base_model.php`
   - Minimal ORM-like base model.
   - Includes `find`, `findFirst`, `insert`, `update`, `delete`, SQL builder helpers.

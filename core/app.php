@@ -15,12 +15,28 @@ class App {
 	private $directory;
 	public $db;
 	public $config;
+
+	public function applySecurityHeaders() {
+		header('X-Content-Type-Options: nosniff');
+		header('X-Frame-Options: DENY');
+		header('Referrer-Policy: strict-origin-when-cross-origin');
+		header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+	}
 	
 	public function __construct(){
 		// Save current directory path
 		$this->directory = dirname(__FILE__);
 
 		if (session_status() === PHP_SESSION_NONE) {
+			$isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+			session_set_cookie_params(array(
+				'lifetime' => 0,
+				'path' => '/',
+				'domain' => '',
+				'secure' => $isHttps,
+				'httponly' => true,
+				'samesite' => 'Lax'
+			));
 			session_start();
 		}
 		
@@ -39,10 +55,7 @@ class App {
 	 * param $vars: array of variables to be accessed insede the views
 	 */
 	public function renderView($viewfile, $vars = array()) {
-		header('X-Content-Type-Options: nosniff');
-		header('X-Frame-Options: DENY');
-		header('Referrer-Policy: strict-origin-when-cross-origin');
-		header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+		$this->applySecurityHeaders();
 
 		// Render array to usable variables
 		foreach ($vars as $key => $value) {

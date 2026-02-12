@@ -73,3 +73,6 @@ this is not a perfect checklist. So please, don’t limit yourself to these poin
   - [x] Added hidden `phone` field sent as E.164 (e.g. `+14155552671`)
   - [x] Backend validation enforces strict E.164 format and length
   - [x] Added `phone` column in table and AJAX row rendering
+
+## Replaced mysqli for pdo
+I thought about adding an ORM for this project, but think it would be overkill for our needs.

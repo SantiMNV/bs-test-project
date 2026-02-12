@@ -6,48 +6,50 @@
  */
 class Database {
 	
-	public $mysqli;
+	public $pdo;
 	private $lastQuery;
+	private $lastParams;
+	private $lastStatement;
 	private $config;
 	
 	/**
 	 * Connects to database with given config
 	 */
 	public function connect($config){
-		$this->config = $config;	
-		$this->mysqli = new mysqli($this->config['address'], $this->config['username'], $this->config['password'], $this->config['database']);
-		
-		if ($this->mysqli->connect_errno) {
+		$this->config = $config;
+
+		$dsn = 'mysql:host='.$this->config['address'].';dbname='.$this->config['database'].';charset=utf8mb4';
+
+		try {
+			$this->pdo = new PDO(
+				$dsn,
+				$this->config['username'],
+				$this->config['password'],
+				array(
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+					PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+					PDO::ATTR_EMULATE_PREPARES => false
+				)
+			);
+		} catch (PDOException $e) {
+			error_log('Database connection error: '.$e->getMessage());
 			die('Database connection failed.');
 		}
-		// Set correct encoding
-		$this->mysqli->set_charset('utf8mb4');
 	}
-	
-	/**
-	 * Converts mysqli result object to 2-dimensional associative array
-	 */
-	private function getRows($res){
-		$r = array();
-		while($row = $res->fetch_assoc()){
-			$r[] = $row;
-		}
-		return $r;
-	}
-	
+
 	/*
 	 * Returns number of affected rows
 	 */
 	public function affected(){
-		return $this->mysqli->affected_rows;
+		return $this->lastStatement ? $this->lastStatement->rowCount() : 0;
 	}
-	
+
 	/**
 	 * Dies and prints all relevant error information
 	 */
-	private function handleError() {
-		error_log('Database error ('.$this->mysqli->errno.'): '.$this->mysqli->error);
-		die('A database error occurred.');	
+	private function handleError($e) {
+		error_log('Database error: '.$e->getMessage());
+		die('A database error occurred.');
 	}
 	
 	/**
@@ -56,26 +58,42 @@ class Database {
 	 */
 	public function getCount(){
 		$q = $this->lastQuery;
+		$params = $this->lastParams;
+		if (!$q) {
+			return 0;
+		}
+
 		// Prepare query: replace select fields with count, and remove LIMIT
 		$q = preg_replace('/SELECT (.*?) FROM/i','SELECT COUNT(*) AS count FROM',$q);
-		$q = preg_replace('/LIMIT (.*)/','',$q);
-		// Execute query
-		$ret = $this->query($q);
-		// Return the count field
-		return $ret[0]['count'];
+		$q = preg_replace('/LIMIT (.*)/i','',$q);
+		$ret = $this->query($q, $params);
+		return isset($ret[0]['count']) ? (int) $ret[0]['count'] : 0;
 	}
 	
 	/**
 	 * Executes given query and returns associative array of results, or true if no rows were returned by DB
 	 */
-	public function query($q){
-		// Save query for later use
+	public function query($q, $params = array()){
 		$this->lastQuery = $q;
-		// Execute query
-		$res = $this->mysqli->query($q) or $this->handleError();
-		// Convert result to array if possible
-		$ret =  is_object($res)?$this->getRows($res):true;
-		return $ret;
+		$this->lastParams = $params;
+
+		try {
+			$stmt = $this->pdo->prepare($q);
+			$stmt->execute($params);
+			$this->lastStatement = $stmt;
+
+			if (preg_match('/^\s*(SELECT|SHOW|DESCRIBE|EXPLAIN)\b/i', $q)) {
+				return $stmt->fetchAll();
+			}
+
+			return true;
+		} catch (Throwable $e) {
+			$this->handleError($e);
+		}
+	}
+
+	public function lastInsertId(){
+		return (int) $this->pdo->lastInsertId();
 	}
 }
 

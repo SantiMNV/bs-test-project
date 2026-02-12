@@ -1,6 +1,7 @@
 <?php
 
 $app = require "./core/app.php";
+$app->applySecurityHeaders();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 	header('Location: index.php', true, 303);
@@ -96,14 +97,18 @@ if (!empty($errors)) {
 	failRequest($errors, $oldInput, $isAjax, 422);
 }
 
-$stmt = $app->db->mysqli->prepare('INSERT INTO `users` (`name`, `email`, `city`, `phone`, `created_at`) VALUES (?, ?, ?, ?, NOW())');
-if (!$stmt) {
-	failRequest(array('Unable to save record right now. Please try again.'), $oldInput, $isAjax, 500);
+try {
+	$stmt = $app->db->pdo->prepare('INSERT INTO `users` (`name`, `email`, `city`, `phone`, `created_at`) VALUES (:name, :email, :city, :phone, NOW())');
+	$ok = $stmt->execute(array(
+		':name' => $name,
+		':email' => $email,
+		':city' => $city,
+		':phone' => $phone
+	));
+} catch (Throwable $e) {
+	error_log('Create user error: '.$e->getMessage());
+	$ok = false;
 }
-
-$stmt->bind_param('ssss', $name, $email, $city, $phone);
-$ok = $stmt->execute();
-$stmt->close();
 
 if (!$ok) {
 	failRequest(array('Unable to save record right now. Please try again.'), $oldInput, $isAjax, 500);
