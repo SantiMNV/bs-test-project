@@ -6,6 +6,25 @@
   <div class="card-header">
     <h2 class="h5 mb-0">User List</h2>
   </div>
+  <div class="card-body pb-0">
+    <div class="row g-2 align-items-center mb-3">
+      <div class="col-sm-8 col-md-6">
+        <label for="citySearch" class="form-label mb-1">Filter by city</label>
+        <input
+          type="search"
+          id="citySearch"
+          class="form-control"
+          placeholder="Type a city name..."
+          aria-describedby="citySearchHelp"
+          autocomplete="off"
+        >
+      </div>
+      <div class="col-sm-4 col-md-3">
+        <label class="form-label d-none d-sm-block mb-1">&nbsp;</label>
+        <button type="button" id="clearCitySearch" class="btn btn-outline-secondary w-100">Clear filter</button>
+      </div>
+    </div>
+  </div>
   <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover mb-0">
       <thead>
@@ -15,14 +34,17 @@
           <th>City</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="userTableBody">
         <?php foreach ($users as $user) { ?>
-        <tr>
+        <tr data-city="<?= htmlspecialchars($user->getCity(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
           <td><?= htmlspecialchars($user->getName(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
           <td><?= htmlspecialchars($user->getEmail(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
           <td><?= htmlspecialchars($user->getCity(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
         </tr>
         <?php } ?>
+        <tr id="cityFilterNoResults" style="display: none;">
+          <td colspan="3" class="text-center text-muted">No users match this city filter.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -79,20 +101,3 @@
     </form>
   </div>
 </div>
-
-<script>
-(function () {
-  var forms = document.querySelectorAll('.needs-validation');
-
-  Array.prototype.slice.call(forms).forEach(function (form) {
-    form.addEventListener('submit', function (event) {
-      if (!form.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      form.classList.add('was-validated');
-    }, false);
-  });
-})();
-</script>

@@ -1,6 +1,6 @@
 - [x] Styling the page using [Bootstrap](http://getbootstrap.com/) or [Tailwind](https://tailwindcss.com/)
 - [x] Adding validation of new records
-- [ ] Creating a JS search functionality that allows users to filter records by city
+- [x] Creating a JS search functionality that allows users to filter records by city
 - [ ] Implementing form submission using AJAX
 - [ ] Adding a phone number column to the table
 - [ ] Deploying your project and sending us a production link
@@ -50,3 +50,10 @@ this is not a perfect checklist. So please, don’t limit yourself to these poin
     - [x] `Referrer-Policy: strict-origin-when-cross-origin`
   - [x] Reduced sensitive DB error leakage in `core/database.php`
   - [x] Switched DB connection charset to `utf8mb4`
+
+- [x] JS city search/filter functionality
+  - [x] Added city search input above user table
+  - [x] Implemented real-time filtering as user types
+  - [x] Added clear filter button
+  - [x] Added no-results row when no city matches query
+  - [x] Moved inline page scripts into external `js/application.js` for CSP compatibility
